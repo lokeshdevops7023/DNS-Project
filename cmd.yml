@@ -1,3 +1,0 @@
-kubectl apply -f jenkins-deployment.yaml
-kubectl apply -f jenkins-service.yaml
-
