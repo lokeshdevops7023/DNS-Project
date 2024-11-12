@@ -1,0 +1,31 @@
+import boto3
+import csv
+
+# Initialize a session using Amazon EC2
+session = boto3.Session(region_name="us-east-1")  # Replace with your desired region
+ec2 = session.client("ec2")
+
+# Retrieve all EBS volumes
+volumes = ec2.describe_volumes()
+
+# Specify the CSV file name
+csv_file = "ebs_volumes.csv"
+
+# Open the file in write mode
+with open(csv_file, mode="w", newline="") as file:
+    writer = csv.writer(file)
+    # Write header row
+    writer.writerow(["Volume ID", "Size (GiB)", "Volume Type", "State", "Availability Zone", "Snapshot ID"])
+
+    # Write data rows
+    for volume in volumes["Volumes"]:
+        writer.writerow([
+            volume["VolumeId"],
+            volume["Size"],
+            volume["VolumeType"],
+            volume["State"],
+            volume["AvailabilityZone"],
+            volume.get("SnapshotId", "None")  # Use "None" if SnapshotId is missing
+        ])
+
+print(f"Data has been written to {csv_file}")
